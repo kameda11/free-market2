@@ -1,0 +1,82 @@
+/* フォームの全体背景や調整 */
+body {
+    background-color: #f9fafb;
+    /* Tailwindの bg-gray-100 相当 */
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* ラベルの強調 */
+label {
+    font-weight: 600;
+    color: #374151;
+    /* Tailwindの text-gray-700 相当 */
+}
+
+/* 入力エリア共通 */
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+    transition: border 0.2s, box-shadow 0.2s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #2563eb;
+    /* Tailwindの blue-600 */
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    outline: none;
+}
+
+/* エラーメッセージ */
+.text-red-500 {
+    margin-top: 4px;
+}
+
+/* ボタンのホバーをさらに目立たせる */
+button:hover {
+    transform: scale(1.02);
+    transition: transform 0.2s;
+}
+
+/* 画像プレビューがある場合のために枠作成（JSで使う時） */
+.image-preview {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border: 1px solid #d1d5db;
+    /* gray-300 */
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+/* フォームのラッパー調整（オプション） */
+form {
+    max-width: 700px;
+    margin: auto;
+}
+
+.category-chip {
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 9999px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    user-select: none;
+    background-color: #fff;
+    color: #333;
+    transition: all 0.2s ease-in-out;
+}
+
+.category-chip:hover {
+    background-color: #f3f3f3;
+}
+
+.category-chip input:checked+span,
+.category-chip input:checked~* {
+    background-color: #3490dc;
+    color: #fff;
+    border-color: #3490dc;
+}

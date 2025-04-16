@@ -1,45 +1,39 @@
 .header {
-    background: #000;
-}
-
-.header__inner {
-    margin: 0 auto;
-    padding: 20px 15px;
-    max-width: 1230px;
-}
-
-.header-utilities {
+    background-color: #000;
+    /* 黒背景 */
+    padding: 15px 20px;
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
 }
 
-.header__logo {
+.header__logo img {
+    height: 36px;
+}
+
+/* ナビゲーションメニュー */
+.header__nav {
+    display: flex;
+}
+
+.header__menu {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* メニューのリンク */
+.header__menu li a {
     color: #fff;
+    /* 白文字 */
     text-decoration: none;
     font-weight: bold;
-    font-size: 24px;
+    transition: color 0.3s ease;
 }
 
-.header-utilities nav {
-    width: 18%;
-}
-
-.header-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.header-nav__link {
-    color: #fff;
-    text-decoration: none;
-}
-
-.header-nav__button {
-    border: none;
-    background: transparent;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
+.header__menu li a:hover {
+    color: #ccc;
+    /* ホバー時に少し明るく */
 }

@@ -1,0 +1,59 @@
+.address-edit {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 30px auto;
+}
+
+.address-edit h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+.address-edit form {
+    display: flex;
+    flex-direction: column;
+}
+
+.address-edit label {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.address-edit input[type="text"] {
+    font-size: 16px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.address-edit button {
+    background-color: #3498db;
+    color: #fff;
+    font-size: 16px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+.address-edit button:hover {
+    background-color: #2980b9;
+}
+
+.address-edit .error {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
