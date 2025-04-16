@@ -13,10 +13,17 @@ class CreateAddressesTable extends Migration
      */
     public function up()
     {
-        Schema::create('addresses', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('addresses')) {
+            Schema::create('addresses', function (Blueprint $table) {
+                $table->id();
+                $table->string('name');
+                $table->string('post_code', 10);
+                $table->string('address');
+                $table->string('building')->nullable();
+                $table->timestamps();
+                $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            });
+        }
     }
 
     /**
@@ -26,6 +33,10 @@ class CreateAddressesTable extends Migration
      */
     public function down()
     {
+        Schema::table('addresses', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
+            $table->dropColumn('user_id');
+        });
         Schema::dropIfExists('addresses');
     }
 }

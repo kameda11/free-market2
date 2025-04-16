@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\Exhibition;
 
 class ExhibitionTableSeeder extends Seeder
 {
@@ -13,6 +14,6 @@ class ExhibitionTableSeeder extends Seeder
      */
     public function run()
     {
-        //
+        Exhibition::factory()->count(10)->create();
     }
 }
