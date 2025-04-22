@@ -20,28 +20,28 @@ use Illuminate\Http\Request;
 */
 
 Route::get('/', [ItemController::class, 'index'])->name('index');
-Route::get('/ditail/{id}', [ItemController::class, 'show'])->name('detail');
-Route::post('/login', [LoginController::class, 'store'])->name('login');
+Route::get('/item/{item_id}', [ItemController::class, 'show'])->name('detail');
+Route::post('/login', [LoginController::class, 'login'])->name('login');
 Route::get('/register', [LoginController::class, 'showRegisterForm'])->name('register.form');
 Route::post('/register', [LoginController::class, 'register'])->name('register');
 
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::post('/cart/add', [ItemController::class, 'add'])->name('cart.add');
     Route::get('/cart', [ItemController::class, 'index'])->name('cart.index');
     Route::get('/address', [UserController::class, 'address']);
-    Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+    Route::get('/mypage', [UserController::class, 'profile'])->name('mypage');
     Route::post('/profile/update', [UserController::class, 'updateProfile'])->name('profile.update');
-    Route::get('/address/edit', [UserController::class, 'edit'])->name('edit');
     Route::post('/address/update', [UserController::class, 'updateAddress'])->name('address.update');
     Route::get('/purchase', [ItemController::class, 'purchase']);
-    Route::post('/purchase/confirm', [ItemController::class, 'confirm'])->name('purchase.confirm');
+    Route::post('/purchase/{item_id}', [ItemController::class, 'confirm'])->name('purchase.confirm');
     Route::post('/purchase/complete', [ItemController::class, 'complete'])->name('purchase.complete');
     Route::get('/sell', [ItemController::class, 'create'])->name('sell');
     Route::post('/products', [ItemController::class, 'store'])->name('sell.store');
     Route::post('/comments', [ItemController::class, 'storeComment'])->name('comments.store');
     Route::post('/favorites', [ItemController::class, 'store'])->name('favorites.store');
     Route::post('/favorites/toggle', [ItemController::class, 'toggle'])->name('favorites.toggle');
+    Route::get('/profile/edit', [UserController::class, 'editProfile'])->name('profile.edit');
 });
 
 
@@ -54,7 +54,7 @@ Route::get('/email/verify', function () {
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
-    return redirect('/profile'); // 認証後の遷移先をお好みで変更
+    return redirect('/edit'); // 認証後の遷移先をお好みで変更
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 // 再送信処理
@@ -62,3 +62,6 @@ Route::post('/email/verification-notification', function (Request $request) {
     $request->user()->sendEmailVerificationNotification();
     return back()->with('message', '認証メールを再送しました。');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+//Route::get('/purchase/address/{item_id}', [UserController::class, 'address'])->middleware('verified')->name('address');
+Route::get('/purchase/address/{item_id}', [UserController::class, 'address'])->name('address');

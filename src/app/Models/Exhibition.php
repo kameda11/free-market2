@@ -24,7 +24,7 @@ class Exhibition extends Model
         'price' => 'integer',
     ];
 
-    public function user()
+    public function users()
     {
         return $this->belongsTo(User::class);
     }
@@ -34,7 +34,7 @@ class Exhibition extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public function purchase()
+    public function purchases()
     {
         return $this->hasOne(Purchase::class);
     }

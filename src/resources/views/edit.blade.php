@@ -20,7 +20,7 @@
         {{-- プロフィール画像変更 --}}
         <div class="form-group">
             <label for="profile_image" class="form-label">プロフィール画像</label>
-            <input type="file" name="profile_image" id="profile_image" class="form-input">
+            <input type="file" name="profile_image" id="profile_image" class="form-input" accept="image/*">
         </div>
 
         {{-- 住所変更 --}}

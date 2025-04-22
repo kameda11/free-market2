@@ -11,16 +11,16 @@ class Comment extends Model
 
     protected $fillable = [
         'exhibition_id',
-        'user_name',
+        'user_id',
         'comment'
     ];
 
-    public function exhibition()
+    public function exhibitions()
     {
         return $this->belongsTo(Exhibition::class);
     }
 
-    public function user()
+    public function users()
     {
         return $this->belongsTo(User::class);
     }

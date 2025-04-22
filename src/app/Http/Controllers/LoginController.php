@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
-    public function store(Request $request)
+    public function login(Request $request)
     {
         // バリデーション
         $request->validate([
@@ -43,7 +43,6 @@ class LoginController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ]);
-
         // ユーザー作成
         $user = User::create([
             'name' => $request->name,

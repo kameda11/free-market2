@@ -29,7 +29,7 @@
         <p>{{ $address->name }}</p>
         <p>{{ $address->post_code }}</p>
         <p>{{ $address->address }} {{ $address->building }}</p>
-        <p><a href="{{ route('edit') }}">住所を変更する</a></p>
+        <p><a href="{{ route('edit', ['item_id' => $item->id]) }}">住所を変更する</a></p>
 
         <button type="submit">購入する</button>
     </form>

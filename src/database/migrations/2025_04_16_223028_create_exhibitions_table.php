@@ -17,8 +17,8 @@ class CreateExhibitionsTable extends Migration
             $table->id();
             $table->string('name');
             $table->text('detail');
-            $table->string('brand');
-            $table->text('category')->change();
+            $table->string('brand')->nullable();
+            $table->text('category');
             $table->string('product_image');
             $table->string('condition');
             $table->integer('price')->unsigned()->default(0);

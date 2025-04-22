@@ -35,7 +35,6 @@ class ExhibitionFactory extends Factory
         ];
 
         $conditions = [
-            'new',
             'used_like_new',
             'used_good',
             'used_fair',
@@ -46,7 +45,7 @@ class ExhibitionFactory extends Factory
             'name' => $this->faker->words(2, true),
             'detail' => $this->faker->sentence(),
             'category' => $this->faker->randomElement($categories),
-            'product_image' => 'storage/products/' . $this->faker->randomElement($filenames),
+            'product_image' => 'products/' . $this->faker->randomElement($filenames), 
             'condition' => $this->faker->randomElement($conditions),
             'price' => $this->faker->numberBetween(1000, 10000),
             'brand' => $this->faker->company(), // ブランド名をランダム生成

@@ -26,7 +26,7 @@ class ExhibitionRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'detail' => 'required|string|max:1000',
-            'category' => 'required|string|max:100',
+            'category' => 'required|array|min:1',
             'product_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'condition' => 'required|string|in:new,used_like_new,used_good,used_fair,used_poor',
             'price' => 'required|integer|min:0',

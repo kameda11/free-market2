@@ -10,7 +10,7 @@
     </div>
 
     <div class="verify-email__actions">
-        <form method="GET" action="{{ route('edit') }}">
+        <form method="GET" action="{{ route('profile.edit') }}">
             <button type="submit" class="verify-email__check-btn">認証はこちらから</button>
         </form>
         <form method="POST" action="{{ route('verification.send') }}">

@@ -13,12 +13,12 @@ class Favorite extends Model
         'exhibition_id'
     ];
 
-    public function user()
+    public function users()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function exhibition()
+    public function exhibitions()
     {
         return $this->belongsTo(Exhibition::class);
     }

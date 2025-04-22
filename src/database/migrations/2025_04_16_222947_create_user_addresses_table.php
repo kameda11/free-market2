@@ -17,7 +17,7 @@ class CreateUserAddressesTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // ユーザーと紐づく
             $table->string('name');         // 受取人の名前など
-            $table->string('post_code', 10);
+            $table->string('post_code', 8);
             $table->string('address');
             $table->string('building')->nullable();
             $table->boolean('is_default')->default(false); // デフォルト住所かどうか

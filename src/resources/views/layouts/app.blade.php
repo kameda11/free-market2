@@ -20,7 +20,7 @@
             @if (!Request::is('login') && !Request::is('register'))
             <ul class="header__menu">
                 @auth
-                <li><a href="{{ route('profile') }}">マイページ</a></li>
+                <li><a href="{{ route('mypage') }}">マイページ</a></li>
                 <li><a href="{{ route('sell') }}">出品</a></li>
                 <li>
                     <a href="{{ route('logout') }}"

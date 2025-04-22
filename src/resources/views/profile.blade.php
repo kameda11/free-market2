@@ -6,51 +6,71 @@
 
 @section('content')
 <div class="profile__container">
-    <h2>プロフィールページ</h2>
-
     {{-- ユーザー情報表示 --}}
     <div class="profile__info">
-        <p><strong>ユーザー名：</strong>{{ $address->name ?? $user->name }}</p>
-        <a href="{{ route('edit') }}" class="profile__edit-button">プロフィール編集</a>
+        {{-- プロフィール画像 --}}
+        <div class="profile__image">
+            <img src="{{ asset('storage/' . (optional($user->profile)->profile_image ?? 'profile.png')) }}" alt="プロフィール画像" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
+        </div>
+        <p>{{ $address->name ?? $user->name }}</p>
+        <a href="{{ route('profile.edit') }}" class="profile__edit-button">プロフィール編集</a>
     </div>
 
     {{-- 出品商品と購入商品の切り替えタブ --}}
     <div class="profile__tabs">
-        <button onclick="showTab('exhibitions')">出品商品</button>
-        <button onclick="showTab('purchases')">購入商品</button>
+        <a href="{{ route('mypage', ['tab' => 'sell']) }}">
+            <button class="{{ request('tab') === 'sell' ? 'active' : '' }}">出品商品</button>
+        </a>
+        <a href="{{ route('mypage', ['tab' => 'buy']) }}">
+            <button class="{{ request('tab') === 'buy' ? 'active' : '' }}">購入商品</button>
+        </a>
     </div>
 
-    <div id="exhibitions" class="profile__tab-content">
-        <h3>出品商品</h3>
-        @forelse ($exhibitions as $item)
-        <div class="product__item">
-            <p>{{ $item->title }}</p>
-            <p>{{ $item->price }}円</p>
-        </div>
-        @empty
-        <p>出品商品はありません。</p>
-        @endforelse
-    </div>
+    @php
+        $tab = request('tab', 'sell'); // デフォルトを 'sell'
+    @endphp
 
-    <div id="purchases" class="profile__tab-content" style="display: none;">
-        <h3>購入商品</h3>
-        @forelse ($purchases as $item)
-        <div class="product__item">
-            <p>{{ $item->title }}</p>
-            <p>{{ $item->price }}円</p>
+   {{-- 出品商品 --}}
+@if ($tab === 'sell')
+<div class="profile__tab-content">
+    @forelse ($exhibitions as $exhibition)
+    <a href="{{ route('detail', $exhibition->id) }}" class="card__button card__button--compact">
+        <div class="l-wrapper">
+            <article class="card">
+                <figure class="card__thumbnail">
+                    <img src="{{ asset('storage/' . $exhibition->product_image) }}" alt="image" class="card__image">
+                    @if($exhibition->purchase)
+                    <span class="sold-label">Sold</span>
+                    @endif
+                </figure>
+                <h3 class="card__title">{{ $exhibition->name }}</h3>
+            </article>
         </div>
-        @empty
-        <p>購入商品はありません。</p>
-        @endforelse
-    </div>
+    </a>
+    @empty
+    <p>出品商品はありません。</p>
+    @endforelse
 </div>
 
-<script>
-    function showTab(tab) {
-        document.getElementById('exhibitions').style.display = 'none';
-        document.getElementById('purchases').style.display = 'none';
-        document.getElementById(tab).style.display = 'block';
-    }
-</script>
+{{-- 購入商品 --}}
+@else
+<div class="profile__tab-content">
+    @forelse ($purchases as $exhibition)
+    <a href="{{ route('detail', $exhibition->id) }}" class="card__button card__button--compact">
+        <div class="l-wrapper">
+            <article class="card">
+                <figure class="card__thumbnail">
+                    <img src="{{ asset('storage/' . $exhibition->product_image) }}" alt="image" class="card__image">
+                </figure>
+                <h3 class="card__title">{{ $exhibition->name }}</h3>
+            </article>
+        </div>
+    </a>
+    @empty
+    <p>購入商品はありません。</p>
+    @endforelse
+</div>
+@endif
+</div>
 
 @endsection

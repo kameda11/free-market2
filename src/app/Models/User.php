@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -44,10 +44,10 @@ class User extends Authenticatable
 
     public function addresses()
     {
-        return $this->hasMany(Address::class);
+        return $this->hasOne(Address::class);
     }
 
-    public function profile()
+    public function profiles()
     {
         return $this->hasOne(Profile::class);
     }
@@ -55,5 +55,25 @@ class User extends Authenticatable
     public function favorites()
     {
         return $this->hasMany(Favorite::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class);
+    }
+
+    public function exhibitions()
+    {
+        return $this->hasMany(Exhibition::class);
+    }
+
+    public function userAddresses()
+    {
+        return $this->hasMany(UserAddress::class);
     }
 }

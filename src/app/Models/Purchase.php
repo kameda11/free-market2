@@ -19,16 +19,19 @@ class Purchase extends Model
     /**
      * リレーション: 購入は1つの住所に属する
      */
-    public function address()
+    public function addresses()
     {
-        return $this->belongsTo(Address::class, 'addresses_id');
+        return $this->belongsTo(Address::class);
     }
 
-    /**
-     * リレーション: 購入は1つの出品に属する
-     */
-    public function exhibition()
+    public function exhibitions()
     {
         return $this->belongsTo(Exhibition::class);
     }
+
+    public function users()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

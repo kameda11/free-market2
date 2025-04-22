@@ -52,7 +52,7 @@ class ItemController extends Controller
 
         // 自分以外の商品で、購入されていない or 購入されているかどうかを見てフィルタ
         $allExhibitions = Exhibition::where('user_id', '!=', $userId)
-            ->with('purchase') // ← purchase情報を事前ロード（あとで便利）
+            ->with('purchases') // ← purchase情報を事前ロード（あとで便利）
             ->get();
 
         // お気に入り商品のうち自分の出品を除く
@@ -62,29 +62,28 @@ class ItemController extends Controller
                 ->where('user_id', $userId);
         })
             ->where('user_id', '!=', $userId)
-            ->with('purchase') // ← purchase情報を事前ロード（あとで便利）
+            ->with('purchases')
             ->get();
 
         return view('index', compact('allExhibitions', 'favoriteExhibitions'));
     }
 
-    public function confirm(PurchaseRequest $request)
+    public function confirm(PurchaseRequest $request, $item_id)
     {
-        $product = Exhibition::findOrFail($request->item_id);
+        $product = Exhibition::findOrFail($item_id);
         $quantity = $request->quantity;
         $user = auth()->user();
 
-        // ユーザーの住所を取得（ここでは1件仮定）
+    // ユーザーの住所を取得（ここでは1件仮定）
         $address = Address::first(); // 実際はuser_idなどで取得
 
         session([
             'purchase_item_id' => $product->id,
             'purchase_quantity' => $quantity,
         ]);
-
-
+    
         return view('purchase', compact('product', 'quantity', 'address'));
-    }
+       }
 
     public function create()
     {
@@ -137,9 +136,9 @@ class ItemController extends Controller
         return back()->with('success', 'コメントを投稿しました！');
     }
 
-    public function show($id)
+    public function show($item_id)
     {
-        $exhibition = Exhibition::findOrFail($id);
+        $exhibition = Exhibition::findOrFail($item_id);
         return view('detail', compact('exhibition'));
     }
 
@@ -160,12 +159,18 @@ class ItemController extends Controller
 
     public function toggle(Request $request)
     {
+        $request->validate([
+            'exhibition_id' => 'required|exists:exhibitions,id',
+        ]);
+
         $exhibitionId = $request->input('exhibition_id');
-        $user = auth()->user();
+        $user = $request->user(); // auth()->user() より読みやすい
 
         $favorite = Favorite::where('user_id', $user->id)
             ->where('exhibition_id', $exhibitionId)
             ->first();
+
+        $status = 'added';
 
         if ($favorite) {
             $favorite->delete();
@@ -175,17 +180,14 @@ class ItemController extends Controller
                 'user_id' => $user->id,
                 'exhibition_id' => $exhibitionId,
             ]);
-            $status = 'added';
         }
 
-        if ($request->ajax()) {
-            return response()->json([
-                'status' => $status,
-                'count' => Exhibition::find($exhibitionId)->favorites()->count(),
-            ]);
-        }
+        $count = Favorite::where('exhibition_id', $exhibitionId)->count();
 
-        return back();
+        return response()->json([
+            'status' => $status,
+            'count' => $count,
+        ]);
     }
 }
 

@@ -50,7 +50,6 @@
             <label for="condition" class="block font-medium mb-2">商品の状態</label>
             <select name="condition" id="condition" class="w-full border border-gray-300 p-2 rounded">
                 <option value="">選択してください</option>
-                <option value="new">新品</option>
                 <option value="used_like_new">良好</option>
                 <option value="used_good">目立った傷や汚れなし</option>
                 <option value="used_fair">やや傷や汚れあり</option>
