@@ -15,22 +15,31 @@
     <p>数量: {{ $quantity }}</p>
     <p>合計: &yen;{{ number_format($product->price * $quantity) }}</p>
 
-    <form action="{{ route('purchase.complete') }}" method="POST">
+    <form action="/purchase/complete" method="POST">
         @csrf
-        <input type="hidden" name="item_id" value="{{ $product->id }}">
+        <input type="hidden" name="exhibition_id" value="{{ $product->id }}">
         <input type="hidden" name="quantity" value="{{ $quantity }}">
+        @if($address)
         <input type="hidden" name="address_id" value="{{ $address->id }}">
+        @endif
 
         <h3>支払い方法</h3>
-        <label><input type="radio" name="payment_method" value="1" required> コンビニ払い</label><br>
+        <label><input type="radio" name="payment_method" value="1" required checked> コンビニ払い</label><br>
         <label><input type="radio" name="payment_method" value="2" required> カード払い</label>
 
         <h3>配送先情報</h3>
-        <p>{{ $address->name }}</p>
-        <p>{{ $address->post_code }}</p>
-        <p>{{ $address->address }} {{ $address->building }}</p>
-        <p><a href="{{ route('edit', ['item_id' => $item->id]) }}">住所を変更する</a></p>
-
+        @if($address)
+        <p>氏名: {{ $address->name }}</p>
+        <p>郵便番号: {{ $address->post_code }}</p>
+        <p>住所: {{ $address->address }}</p>
+        @if($address->building)
+        <p>建物名: {{ $address->building }}</p>
+        @endif
+        <a href="{{ route('purchase.address', ['item_id' => $product->id]) }}">住所を変更する</a>
+        @else
+        <p>住所が登録されていません。</p>
+        <a href="{{ route('purchase.address', ['item_id' => $product->id]) }}">住所を登録する</a>
+        @endif
         <button type="submit">購入する</button>
     </form>
 </div>

@@ -27,50 +27,50 @@
     </div>
 
     @php
-        $tab = request('tab', 'sell'); // デフォルトを 'sell'
+    $tab = request('tab', 'sell'); // デフォルトを 'sell'
     @endphp
 
-   {{-- 出品商品 --}}
-@if ($tab === 'sell')
-<div class="profile__tab-content">
-    @forelse ($exhibitions as $exhibition)
-    <a href="{{ route('detail', $exhibition->id) }}" class="card__button card__button--compact">
-        <div class="l-wrapper">
-            <article class="card">
-                <figure class="card__thumbnail">
-                    <img src="{{ asset('storage/' . $exhibition->product_image) }}" alt="image" class="card__image">
-                    @if($exhibition->purchase)
-                    <span class="sold-label">Sold</span>
-                    @endif
-                </figure>
-                <h3 class="card__title">{{ $exhibition->name }}</h3>
-            </article>
-        </div>
-    </a>
-    @empty
-    <p>出品商品はありません。</p>
-    @endforelse
-</div>
+    {{-- 出品商品 --}}
+    @if ($tab === 'sell')
+    <div class="profile__tab-content">
+        @forelse ($exhibitions as $exhibition)
+        <a href="{{ route('detail', $exhibition->id) }}" class="card__button card__button--compact">
+            <div class="l-wrapper">
+                <article class="card">
+                    <figure class="card__thumbnail">
+                        <img src="{{ asset('storage/' . $exhibition->product_image) }}" alt="image" class="card__image">
+                        @if($exhibition->sold)
+                        <span class="sold-label">Sold</span>
+                        @endif
+                    </figure>
+                    <h3 class="card__title">{{ $exhibition->name }}</h3>
+                </article>
+            </div>
+        </a>
+        @empty
+        <p>出品商品はありません。</p>
+        @endforelse
+    </div>
 
-{{-- 購入商品 --}}
-@else
-<div class="profile__tab-content">
-    @forelse ($purchases as $exhibition)
-    <a href="{{ route('detail', $exhibition->id) }}" class="card__button card__button--compact">
-        <div class="l-wrapper">
-            <article class="card">
-                <figure class="card__thumbnail">
-                    <img src="{{ asset('storage/' . $exhibition->product_image) }}" alt="image" class="card__image">
-                </figure>
-                <h3 class="card__title">{{ $exhibition->name }}</h3>
-            </article>
-        </div>
-    </a>
-    @empty
-    <p>購入商品はありません。</p>
-    @endforelse
-</div>
-@endif
+    {{-- 購入商品 --}}
+    @else
+    <div class="profile__tab-content">
+        @forelse ($purchases as $exhibition)
+        <a href="{{ route('detail', $exhibition->id) }}" class="card__button card__button--compact">
+            <div class="l-wrapper">
+                <article class="card">
+                    <figure class="card__thumbnail">
+                        <img src="{{ asset('storage/' . $exhibition->product_image) }}" alt="image" class="card__image">
+                    </figure>
+                    <h3 class="card__title">{{ $exhibition->name }}</h3>
+                </article>
+            </div>
+        </a>
+        @empty
+        <p>購入商品はありません。</p>
+        @endforelse
+    </div>
+    @endif
 </div>
 
 @endsection

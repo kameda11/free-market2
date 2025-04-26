@@ -17,7 +17,7 @@
             <article class="card">
                 <figure class="card__thumbnail">
                     <img src="{{ asset('storage/' . $exhibition->product_image) }}" alt="image" class="card__image">
-                    @if($exhibition->purchase)
+                    @if($exhibition->sold)
                     <span class="sold-label">Sold</span>
                     @endif
                 </figure>
@@ -35,6 +35,9 @@
             <article class="card">
                 <figure class="card__thumbnail">
                     <img src="{{ asset('storage/' . $exhibition->product_image) }}" alt="image" class="card__image">
+                    @if($exhibition->sold)
+                    <span class="sold-label">Sold</span>
+                    @endif
                 </figure>
                 <h3 class="card__title">{{$exhibition->name}}</h3>
             </article>

@@ -33,8 +33,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/mypage', [UserController::class, 'profile'])->name('mypage');
     Route::post('/profile/update', [UserController::class, 'updateProfile'])->name('profile.update');
     Route::post('/address/update', [UserController::class, 'updateAddress'])->name('address.update');
-    Route::get('/purchase', [ItemController::class, 'purchase']);
-    Route::post('/purchase/{item_id}', [ItemController::class, 'confirm'])->name('purchase.confirm');
+    Route::get('/purchase/{exhibition_id}', [ItemController::class, 'purchases'])->name('purchase');
+    Route::post('/purchase/{exhibition_id}', [ItemController::class, 'confirm'])->name('purchase.confirm');
     Route::post('/purchase/complete', [ItemController::class, 'complete'])->name('purchase.complete');
     Route::get('/sell', [ItemController::class, 'create'])->name('sell');
     Route::post('/products', [ItemController::class, 'store'])->name('sell.store');
@@ -64,4 +64,4 @@ Route::post('/email/verification-notification', function (Request $request) {
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 //Route::get('/purchase/address/{item_id}', [UserController::class, 'address'])->middleware('verified')->name('address');
-Route::get('/purchase/address/{item_id}', [UserController::class, 'address'])->name('address');
+Route::get('/purchase/address/{item_id}', [UserController::class, 'purchaseAddress'])->name('purchase.address');

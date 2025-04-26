@@ -16,6 +16,7 @@ class Exhibition extends Model
         'product_image',
         'condition',
         'price',
+        'sold',
         'user_id',
         'brand',
     ];

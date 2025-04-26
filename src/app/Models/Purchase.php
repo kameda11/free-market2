@@ -14,6 +14,7 @@ class Purchase extends Model
         'exhibition_id',
         'amount',
         'payment_method',
+        'user_id',
     ];
 
     /**
@@ -33,5 +34,4 @@ class Purchase extends Model
     {
         return $this->belongsTo(User::class);
     }
-
 }

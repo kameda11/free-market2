@@ -21,30 +21,30 @@
 
         <div class="product-info">
             <p>カテゴリ：
-            @php
+                @php
                 $categories = json_decode($exhibition->category, true);
-            @endphp
+                @endphp
 
-            @if(!empty($categories) && is_array($categories))
-                 {{ implode(' / ', $categories) }}
-            @else
+                @if(!empty($categories) && is_array($categories))
+                {{ implode(' / ', $categories) }}
+                @else
                 不明
-            @endif
+                @endif
             </p>
-    <p>商品の状態：
-        @php
-            $conditionLabels = [
+            <p>商品の状態：
+                @php
+                $conditionLabels = [
                 'brand_new' => '新品・未使用',
                 'used_like_new' => '未使用に近い',
                 'used_good' => '目立った傷や汚れなし',
                 'used_acceptable' => 'やや傷や汚れあり',
                 'used_poor' => '全体的に状態が悪い',
-            ];
-        @endphp
-        {{ $conditionLabels[$exhibition->condition] ?? '不明' }}
-    </p>
-    <p>価格：&yen; {{ number_format($exhibition->price) }}</p>
-</div>
+                ];
+                @endphp
+                {{ $conditionLabels[$exhibition->condition] ?? '不明' }}
+            </p>
+            <p>価格：&yen; {{ number_format($exhibition->price) }}</p>
+        </div>
 
         {{-- お気に入り登録数・コメント数 --}}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -60,12 +60,9 @@
             <span class="favorite-count">{{ $exhibition->favorites->count() }}</span>
         </button>
 
-            <p><i class="far fa-comment"></i>{{ $exhibition->comments->count() }}</p>
+        <p><i class="far fa-comment"></i>{{ $exhibition->comments->count() }}</p>
 
-        <form action="{{ route('purchase.confirm', ['item_id' => $exhibition->id]) }}" method="POST">
-            @csrf
-            <input type="hidden" name="item_id" value="{{ $exhibition->id }}">
-            <input type="hidden" name="quantity" value="1">
+        <form action="{{ route('purchase', ['exhibition_id' => $exhibition->id]) }}" method="GET">
             <button type="submit">購入手続きへ</button>
         </form>
 
@@ -114,38 +111,40 @@
 
 @section('js')
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.favorite-button').forEach(button => {
-        button.addEventListener('click', function () {
-            const exhibitionId = this.dataset.id;
-            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.favorite-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const exhibitionId = this.dataset.id;
+                const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-            fetch('/favorites/toggle', {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': token,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ exhibition_id: exhibitionId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                const icon = this.querySelector('i');
-                const countSpan = this.querySelector('.favorite-count');
+                fetch('/favorites/toggle', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': token,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            exhibition_id: exhibitionId
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const icon = this.querySelector('i');
+                        const countSpan = this.querySelector('.favorite-count');
 
-                if (data.status === 'added') {
-                    icon.classList.remove('far');
-                    icon.classList.add('fas');
-                } else if (data.status === 'removed') {
-                    icon.classList.remove('fas');
-                    icon.classList.add('far');
-                }
+                        if (data.status === 'added') {
+                            icon.classList.remove('far');
+                            icon.classList.add('fas');
+                        } else if (data.status === 'removed') {
+                            icon.classList.remove('fas');
+                            icon.classList.add('far');
+                        }
 
-                countSpan.textContent = data.count;
-            })
-            .catch(error => console.error('通信エラー:', error));
+                        countSpan.textContent = data.count;
+                    })
+                    .catch(error => console.error('通信エラー:', error));
+            });
         });
     });
-});
 </script>
 @endsection

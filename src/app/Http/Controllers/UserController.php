@@ -69,10 +69,10 @@ class UserController extends Controller
         return redirect()->route('index')->with('success', 'プロフィールを更新しました');
     }
 
-    public function address()
+    public function addresses()
     {
         $user = auth()->user();
-        $address = $user->address; // 住所を取得
+        $address = $user->address ?? new Address(); // 住所が存在しない場合は新しいAddressインスタンスを作成
         return view('address', compact('user', 'address'));
     }
 
@@ -81,7 +81,7 @@ class UserController extends Controller
         $user = auth()->user();
         $address = $user->address;
         return view('edit', compact('user', 'address', 'item_id'));
-    } 
+    }
 
     public function updateAddress(AddressRequest $request)
     {
@@ -96,9 +96,17 @@ class UserController extends Controller
         // 住所の更新
         $address->update($request->validated());
 
-        return redirect()->route('purchase.confirm', [
-            'id' => session('purchase_item_id'),
-            'quantity' => session('purchase_quantity'),
+        return redirect()->route('purchase', [
+            'item_id' => session('purchase_item_id'),
         ])->with('success', '住所を更新しました');
+    }
+
+    public function purchaseAddress($item_id)
+    {
+        $user = auth()->user();
+        $address = $user->address ?? new Address();
+        $product = Exhibition::findOrFail($item_id);
+
+        return view('address', compact('user', 'address', 'product'));
     }
 }

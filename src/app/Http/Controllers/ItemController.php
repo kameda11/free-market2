@@ -50,10 +50,7 @@ class ItemController extends Controller
     {
         $userId = Auth::id();
 
-        // 自分以外の商品で、購入されていない or 購入されているかどうかを見てフィルタ
-        $allExhibitions = Exhibition::where('user_id', '!=', $userId)
-            ->with('purchases') // ← purchase情報を事前ロード（あとで便利）
-            ->get();
+        $allExhibitions = Exhibition::where('user_id', '!=', $userId)->get();
 
         // お気に入り商品のうち自分の出品を除く
         $favoriteExhibitions = Exhibition::whereIn('id', function ($query) use ($userId) {
@@ -74,16 +71,15 @@ class ItemController extends Controller
         $quantity = $request->quantity;
         $user = auth()->user();
 
-    // ユーザーの住所を取得（ここでは1件仮定）
-        $address = Address::first(); // 実際はuser_idなどで取得
+        $address = $user->address;
 
         session([
             'purchase_item_id' => $product->id,
             'purchase_quantity' => $quantity,
         ]);
-    
+
         return view('purchase', compact('product', 'quantity', 'address'));
-       }
+    }
 
     public function create()
     {
@@ -189,5 +185,45 @@ class ItemController extends Controller
             'count' => $count,
         ]);
     }
-}
 
+    public function complete(PurchaseRequest $request)
+    {
+        try {
+            $exhibitionId = $request->input('exhibition_id');
+            $quantity = $request->input('quantity');
+            $addressId = $request->input('address_id');
+            $paymentMethod = $request->input('payment_method');
+
+            // 商品情報を取得
+            $product = Exhibition::findOrFail($exhibitionId);
+
+            // 購入履歴を作成
+            Purchase::create([
+                'user_id' => auth()->id(),
+                'exhibition_id' => $exhibitionId,
+                'address_id' => $addressId,
+                'amount' => $product->price * $quantity,
+                'payment_method' => $paymentMethod,
+            ]);
+
+            // 商品を売却済みに更新
+            $product->update(['sold' => true]);
+
+            return redirect()->route('index')->with('success', '購入が完了しました！');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', '購入処理中にエラーが発生しました。詳細: ' . $e->getMessage());
+        }
+    }
+
+    public function purchases($exhibition_id)
+    {
+        $product = Exhibition::findOrFail($exhibition_id);
+        $quantity = 1; // デフォルトの数量
+        $user = auth()->user();
+
+        // ユーザーの住所情報を取得
+        $address = $user->address;
+
+        return view('purchase', compact('product', 'quantity', 'address'));
+    }
+}
