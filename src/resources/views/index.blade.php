@@ -16,7 +16,7 @@
         <div class="l-wrapper">
             <article class="card">
                 <figure class="card__thumbnail">
-                    <img src="{{ asset('storage/' . $exhibition->product_image) }}" alt="image" class="card__image">
+                    <img src="{{ $exhibition->product_image }}" alt="image" class="card__image">
                     @if($exhibition->sold)
                     <span class="sold-label">Sold</span>
                     @endif
@@ -34,7 +34,7 @@
         <div class="l-wrapper">
             <article class="card">
                 <figure class="card__thumbnail">
-                    <img src="{{ asset('storage/' . $exhibition->product_image) }}" alt="image" class="card__image">
+                    <img src="{{ $exhibition->product_image }}" alt="image" class="card__image">
                     @if($exhibition->sold)
                     <span class="sold-label">Sold</span>
                     @endif

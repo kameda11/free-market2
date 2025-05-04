@@ -36,7 +36,7 @@ class Exhibition extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public function purchases()
+    public function purchase()
     {
         return $this->hasOne(Purchase::class);
     }

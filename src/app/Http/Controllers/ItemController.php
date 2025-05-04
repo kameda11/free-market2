@@ -51,7 +51,10 @@ class ItemController extends Controller
     {
         $userId = Auth::id();
 
-        $allExhibitions = Exhibition::where('user_id', '!=', $userId)->get();
+        // 自分以外の出品商品を取得
+        $allExhibitions = Exhibition::where('user_id', '!=', $userId)
+            ->where('sold', false)  // 売却済みでない商品のみ
+            ->get();
 
         // お気に入り商品のうち自分の出品を除く
         $favoriteExhibitions = Exhibition::whereIn('id', function ($query) use ($userId) {
@@ -60,7 +63,8 @@ class ItemController extends Controller
                 ->where('user_id', $userId);
         })
             ->where('user_id', '!=', $userId)
-            ->with('purchases')
+            ->where('sold', false)  // 売却済みでない商品のみ
+            ->with('purchase')
             ->get();
 
         return view('index', compact('allExhibitions', 'favoriteExhibitions'));
@@ -68,7 +72,7 @@ class ItemController extends Controller
 
     public function create()
     {
-        return view('sell'); // sell.blade.phpを表示
+        return view('sell');
     }
 
     public function store(ExhibitionRequest $request)
@@ -119,7 +123,7 @@ class ItemController extends Controller
 
     public function show($item_id)
     {
-        $exhibition = Exhibition::findOrFail($item_id);
+        $exhibition = Exhibition::with(['favorites', 'comments.user.profile'])->findOrFail($item_id);
         return view('detail', compact('exhibition'));
     }
 
@@ -200,9 +204,12 @@ class ItemController extends Controller
             $exhibition->sold = true;
             $exhibition->save();
 
-            return redirect()->route('index')->with('success', '購入が完了しました！');
+            // 購入完了後、商品詳細ページにリダイレクト
+            return redirect()->route('detail', ['item_id' => $exhibitionId])
+                ->with('success', '購入が完了しました！');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', '購入処理中にエラーが発生しました。詳細: ' . $e->getMessage());
+            Log::error('Purchase error: ' . $e->getMessage());
+            return redirect()->back()->with('error', '購入処理中にエラーが発生しました。');
         }
     }
 

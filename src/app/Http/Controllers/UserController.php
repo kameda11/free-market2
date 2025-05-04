@@ -25,10 +25,16 @@ class UserController extends Controller
     public function profile(Request $request)
     {
         $user = Auth::user();
-        $user = User::with(['exhibitions', 'purchases', 'address'])->find($user->id);
+        $user = User::with(['exhibitions', 'purchases.exhibition', 'address'])->find($user->id);
         $address = $user->address;
-        $exhibitions = $user->exhibitions; // 出品した商品
-        $purchases = $user->purchases;     // 購入した商品
+
+        // 出品した商品を取得（自分の出品のみ）
+        $exhibitions = $user->exhibitions()->where('user_id', $user->id)->get();
+
+        // 購入した商品を取得
+        $purchases = $user->purchases->map(function ($purchase) {
+            return $purchase->exhibition;
+        });
 
         return view('profile', compact('user', 'address', 'exhibitions', 'purchases'));
     }

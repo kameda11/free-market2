@@ -15,12 +15,12 @@ class Comment extends Model
         'comment'
     ];
 
-    public function exhibitions()
+    public function exhibition()
     {
         return $this->belongsTo(Exhibition::class);
     }
 
-    public function users()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }

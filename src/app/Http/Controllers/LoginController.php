@@ -21,6 +21,16 @@ class LoginController extends Controller
 
         // ログイン試行
         if (Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
+            $user = Auth::user();
+
+            // メール認証が完了していない場合
+            if (!$user->email_verified_at) {
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'メール認証が完了していません。登録したメールアドレスに送信された認証メールをご確認ください。',
+                ]);
+            }
+
             // ログイン後、index.blade.phpにリダイレクト
             return redirect()->route('index');  // 'index' はweb.phpで定義した名前付きルート
         }

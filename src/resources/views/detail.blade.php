@@ -7,7 +7,7 @@
 @section('content')
 <div class="product-detail">
     <div class="left-column">
-        <img src="{{ asset('storage/' . $exhibition->product_image) }}" alt="image" class="product-image">
+        <img src="{{ $exhibition->product_image }}" alt="image" class="card__image">
     </div>
 
     <div class="right-column">
@@ -46,27 +46,32 @@
             <p>価格：&yen; {{ number_format($exhibition->price) }}</p>
         </div>
 
-        {{-- お気に入り登録数・コメント数 --}}
+        {{-- アイコン表示 --}}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         @php
         $isFavorited = Auth::check() && $exhibition->favorites->contains('user_id', Auth::id());
         @endphp
 
-        <button class="favorite-button" data-id="{{ $exhibition->id }}">
-            <i class="{{ $isFavorited ? 'fas' : 'far' }} fa-star"></i>
-            <span class="favorite-count">{{ $exhibition->favorites->count() }}</span>
-        </button>
-
-        <p><i class="far fa-comment"></i>{{ $exhibition->comments->count() }}</p>
+        <div class="icon-group">
+            <div class="icon-block">
+                <button class="favorite-button" data-id="{{ $exhibition->id }}">
+                    <i class="{{ $isFavorited ? 'fas' : 'far' }} fa-star"></i>
+                </button>
+                <span class="favorite-count">{{ $exhibition->favorites->count() }}</span>
+            </div>
+            <div class="icon-block">
+                <i class="fa-regular fa-comment-dots"></i>
+                <span class="comment-count">{{ $exhibition->comments->count() }}</span>
+            </div>
+        </div>
 
         <form action="{{ route('purchase', ['exhibition_id' => $exhibition->id]) }}" method="GET">
             <button type="submit">購入手続きへ</button>
         </form>
 
-        {{-- コメント表示 --}}
+        {{-- コメント一覧 --}}
         <div class="comments">
             <h3>他のユーザーのコメント</h3>
             @foreach($exhibition->comments as $comment)
@@ -87,7 +92,7 @@
             @endforeach
         </div>
 
-        {{-- コメント投稿フォーム --}}
+        {{-- コメント投稿 --}}
         <div class="comment-form">
             <h4>コメントを投稿する</h4>
             @if(session('success'))
@@ -96,7 +101,6 @@
             <form action="{{ route('comments.store') }}" method="POST">
                 @csrf
                 <input type="hidden" name="exhibition_id" value="{{ $exhibition->id }}">
-                {{-- user_name 入力は削除 --}}
                 <div>
                     <label for="comment">コメント:</label>
                     <textarea name="comment" id="comment" required></textarea>
@@ -106,7 +110,6 @@
         </div>
     </div>
 </div>
-
 @endsection
 
 @section('js')
@@ -130,7 +133,7 @@
                     .then(response => response.json())
                     .then(data => {
                         const icon = this.querySelector('i');
-                        const countSpan = this.querySelector('.favorite-count');
+                        const countSpan = this.closest('.icon-block').querySelector('.favorite-count');
 
                         if (data.status === 'added') {
                             icon.classList.remove('far');

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Notifications\VerifyEmail;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -47,7 +48,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(Address::class);
     }
 
-    public function profiles()
+    public function profile()
     {
         return $this->hasOne(Profile::class);
     }
@@ -75,5 +76,22 @@ class User extends Authenticatable implements MustVerifyEmail
     public function userAddresses()
     {
         return $this->hasMany(UserAddress::class);
+    }
+
+    public function hasVerifiedEmail()
+    {
+        return !is_null($this->email_verified_at);
+    }
+
+    public function markEmailAsVerified()
+    {
+        return $this->forceFill([
+            'email_verified_at' => $this->freshTimestamp(),
+        ])->save();
+    }
+
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmail);
     }
 }

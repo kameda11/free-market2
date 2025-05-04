@@ -25,7 +25,7 @@ Route::post('/login', [LoginController::class, 'login'])->name('login');
 Route::get('/register', [LoginController::class, 'showRegisterForm'])->name('register.form');
 Route::post('/register', [LoginController::class, 'register'])->name('register');
 
-
+// 認証済みユーザーのみアクセス可能なルート
 Route::middleware(['auth'])->group(function () {
     Route::post('/cart/add', [ItemController::class, 'add'])->name('cart.add');
     Route::get('/cart', [ItemController::class, 'index'])->name('cart.index');
@@ -38,11 +38,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/sell', [ItemController::class, 'create'])->name('sell');
     Route::post('/products', [ItemController::class, 'store'])->name('sell.store');
     Route::post('/comments', [ItemController::class, 'storeComment'])->name('comments.store');
-    Route::post('/favorites', [ItemController::class, 'store'])->name('favorites.store');
     Route::post('/favorites/toggle', [ItemController::class, 'toggle'])->name('favorites.toggle');
     Route::get('/profile/edit', [UserController::class, 'editProfile'])->name('profile.edit');
 });
-
 
 // 認証ページ（表示用）
 Route::get('/email/verify', function () {
@@ -50,10 +48,9 @@ Route::get('/email/verify', function () {
 })->middleware('auth')->name('verification.notice');
 
 // 認証リンククリック後（自動で処理）
-
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill();
-    return redirect('/edit'); // 認証後の遷移先をお好みで変更
+    return redirect()->route('profile.edit')->with('success', 'メール認証が完了しました！');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 // 再送信処理

@@ -13,7 +13,7 @@
             <img src="{{ asset('storage/' . (optional($user->profile)->profile_image ?? 'profile.png')) }}" alt="プロフィール画像" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
         </div>
         <p>{{ $address->name ?? $user->name }}</p>
-        <a href="{{ route('profile.edit') }}" class="profile__edit-button">プロフィール編集</a>
+        <a href="{{ route('profile.edit') }}" class="profile__edit-button">プロフィール設定</a>
     </div>
 
     {{-- 出品商品と購入商品の切り替えタブ --}}

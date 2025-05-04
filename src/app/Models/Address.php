@@ -22,7 +22,7 @@ class Address extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function purchas()
+    public function purchase()
     {
         return $this->hasOne(Purchase::class);
     }
