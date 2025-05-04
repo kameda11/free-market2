@@ -15,6 +15,7 @@ class CreateExhibitionsTable extends Migration
     {
         Schema::create('exhibitions', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained();
             $table->string('name');
             $table->text('detail');
             $table->string('brand')->nullable();
@@ -22,8 +23,8 @@ class CreateExhibitionsTable extends Migration
             $table->string('product_image');
             $table->string('condition');
             $table->integer('price')->unsigned()->default(0);
+            $table->boolean('sold')->default(false);
             $table->timestamps();
-            $table->foreignId('user_id')->constrained()->after('id');
         });
     }
 

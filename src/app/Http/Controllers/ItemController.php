@@ -12,6 +12,7 @@ use App\Models\Comment;
 use App\Http\Requests\ExhibitionRequest;
 use App\Http\Requests\CommentRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ItemController extends Controller
 {
@@ -63,22 +64,6 @@ class ItemController extends Controller
             ->get();
 
         return view('index', compact('allExhibitions', 'favoriteExhibitions'));
-    }
-
-    public function confirm(PurchaseRequest $request, $item_id)
-    {
-        $product = Exhibition::findOrFail($item_id);
-        $quantity = $request->quantity;
-        $user = auth()->user();
-
-        $address = $user->address;
-
-        session([
-            'purchase_item_id' => $product->id,
-            'purchase_quantity' => $quantity,
-        ]);
-
-        return view('purchase', compact('product', 'quantity', 'address'));
     }
 
     public function create()
@@ -195,19 +180,25 @@ class ItemController extends Controller
             $paymentMethod = $request->input('payment_method');
 
             // 商品情報を取得
-            $product = Exhibition::findOrFail($exhibitionId);
+            $exhibition = Exhibition::findOrFail($exhibitionId);
+
+            // もし既に売り切れだったらエラーにする（ダブル購入防止）
+            if ($exhibition->sold) {
+                return redirect()->route('index')->with('error', 'この商品は既に購入されています。');
+            }
 
             // 購入履歴を作成
-            Purchase::create([
+            $purchase = Purchase::create([
                 'user_id' => auth()->id(),
                 'exhibition_id' => $exhibitionId,
                 'address_id' => $addressId,
-                'amount' => $product->price * $quantity,
+                'amount' => $exhibition->price * $quantity,
                 'payment_method' => $paymentMethod,
             ]);
 
             // 商品を売却済みに更新
-            $product->update(['sold' => true]);
+            $exhibition->sold = true;
+            $exhibition->save();
 
             return redirect()->route('index')->with('success', '購入が完了しました！');
         } catch (\Exception $e) {
@@ -217,13 +208,13 @@ class ItemController extends Controller
 
     public function purchases($exhibition_id)
     {
-        $product = Exhibition::findOrFail($exhibition_id);
+        $exhibition = Exhibition::findOrFail($exhibition_id);
         $quantity = 1; // デフォルトの数量
         $user = auth()->user();
 
         // ユーザーの住所情報を取得
         $address = $user->address;
 
-        return view('purchase', compact('product', 'quantity', 'address'));
+        return view('purchase', compact('exhibition', 'quantity', 'address'));
     }
 }

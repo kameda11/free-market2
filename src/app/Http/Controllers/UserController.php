@@ -24,7 +24,8 @@ class UserController extends Controller
 
     public function profile(Request $request)
     {
-        $user = Auth::user()->load(['exhibitions', 'purchases', 'addresses']);
+        $user = Auth::user();
+        $user = User::with(['exhibitions', 'purchases', 'address'])->find($user->id);
         $address = $user->address;
         $exhibitions = $user->exhibitions; // 出品した商品
         $purchases = $user->purchases;     // 購入した商品
@@ -105,8 +106,8 @@ class UserController extends Controller
     {
         $user = auth()->user();
         $address = $user->address ?? new Address();
-        $product = Exhibition::findOrFail($item_id);
+        $exhibition = Exhibition::findOrFail($item_id);
 
-        return view('address', compact('user', 'address', 'product'));
+        return view('address', compact('user', 'address', 'exhibition'));
     }
 }

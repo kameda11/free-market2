@@ -8,16 +8,16 @@
 <div class="purchase-confirm">
     <h2>購入内容の確認</h2>
 
-    <p><strong>商品名:</strong> {{ $product->name }}</p>
-    <img src="{{ asset($product->product_image) }}" alt="商品画像" width="200">
-    <p>{{ $product->detail }}</p>
-    <p>価格: &yen;{{ number_format($product->price) }}</p>
+    <p><strong>商品名:</strong> {{ $exhibition->name }}</p>
+    <img src="{{ asset($exhibition->product_image) }}" alt="商品画像" width="200">
+    <p>{{ $exhibition->detail }}</p>
+    <p>価格: &yen;{{ number_format($exhibition->price) }}</p>
     <p>数量: {{ $quantity }}</p>
-    <p>合計: &yen;{{ number_format($product->price * $quantity) }}</p>
+    <p>合計: &yen;{{ number_format($exhibition->price * $quantity) }}</p>
 
-    <form action="/purchase/complete" method="POST">
+    <form action="{{ route('purchase.complete') }}" method="POST" id="purchase-form">
         @csrf
-        <input type="hidden" name="exhibition_id" value="{{ $product->id }}">
+        <input type="hidden" name="exhibition_id" value="{{ $exhibition->id }}">
         <input type="hidden" name="quantity" value="{{ $quantity }}">
         @if($address)
         <input type="hidden" name="address_id" value="{{ $address->id }}">
@@ -35,12 +35,12 @@
         @if($address->building)
         <p>建物名: {{ $address->building }}</p>
         @endif
-        <a href="{{ route('purchase.address', ['item_id' => $product->id]) }}">住所を変更する</a>
+        <a href="{{ route('purchase.address', ['item_id' => $exhibition->id]) }}">住所を変更する</a>
         @else
         <p>住所が登録されていません。</p>
-        <a href="{{ route('purchase.address', ['item_id' => $product->id]) }}">住所を登録する</a>
+        <a href="{{ route('purchase.address', ['item_id' => $exhibition->id]) }}">住所を登録する</a>
         @endif
-        <button type="submit">購入する</button>
+        <button type="submit" id="purchase-button">購入する</button>
     </form>
 </div>
 @endsection

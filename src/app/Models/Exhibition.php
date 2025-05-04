@@ -23,9 +23,10 @@ class Exhibition extends Model
 
     protected $casts = [
         'price' => 'integer',
+        'sold' => 'boolean',
     ];
 
-    public function users()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
