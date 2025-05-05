@@ -1,8 +1,8 @@
-# FashionablyLate(お問い合わせフォーム)
+# フリマ
 
 ## 環境構築
 **Dockerビルド**
-1. `git clone git@github.com:estra-inc/confirmation-test-contact-form.git`
+1. `git clone git@github.com:kameda11/free-market2.git`
 2. DockerDesktopアプリを立ち上げる
 3. `docker-compose up -d --build`
 
@@ -29,6 +29,14 @@ DB_USERNAME=laravel_user
 DB_PASSWORD=laravel_pass
 
 mailtripを使用
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=（017df9c70d22f5）
+MAIL_PASSWORD=（4197feb209405f）
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="hello@example.com"
+MAIL_FROM_NAME="${APP_NAME}"
 ```
 5. アプリケーションキーの作成
 ``` bash
@@ -51,7 +59,7 @@ php artisan db:seed
 - MySQL8.0.26
 
 ## ER図
-![alt](./freemarket.png)
+![alt](./freemarket.drawio.png)
 
 ## URL
 - 開発環境：http://localhost/
