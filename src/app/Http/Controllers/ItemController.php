@@ -50,22 +50,28 @@ class ItemController extends Controller
     public function index()
     {
         $userId = Auth::id();
+        $allExhibitions = Exhibition::where('sold', false);  // 売却済みでない商品のみ
 
-        // 自分以外の出品商品を取得
-        $allExhibitions = Exhibition::where('user_id', '!=', $userId)
-            ->where('sold', false)  // 売却済みでない商品のみ
-            ->get();
+        // ログインしている場合のみ、自分の出品を除外
+        if ($userId) {
+            $allExhibitions = $allExhibitions->where('user_id', '!=', $userId);
+        }
 
-        // お気に入り商品のうち自分の出品を除く
-        $favoriteExhibitions = Exhibition::whereIn('id', function ($query) use ($userId) {
-            $query->select('exhibition_id')
-                ->from('favorites')
-                ->where('user_id', $userId);
-        })
-            ->where('user_id', '!=', $userId)
-            ->where('sold', false)  // 売却済みでない商品のみ
-            ->with('purchase')
-            ->get();
+        $allExhibitions = $allExhibitions->get();
+
+        // お気に入り商品の取得（ログインしている場合のみ）
+        $favoriteExhibitions = collect();
+        if ($userId) {
+            $favoriteExhibitions = Exhibition::whereIn('id', function ($query) use ($userId) {
+                $query->select('exhibition_id')
+                    ->from('favorites')
+                    ->where('user_id', $userId);
+            })
+                ->where('user_id', '!=', $userId)
+                ->where('sold', false)
+                ->with('purchase')
+                ->get();
+        }
 
         return view('index', compact('allExhibitions', 'favoriteExhibitions'));
     }
@@ -105,7 +111,16 @@ class ItemController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth');  // 認証されていない場合、コメント投稿はできない
+        $this->middleware('auth')->only([
+            'add',
+            'create',
+            'store',
+            'storeComment',
+            'storeFavorite',
+            'toggle',
+            'complete',
+            'purchases'
+        ]);
     }
 
     public function storeComment(CommentRequest $request)

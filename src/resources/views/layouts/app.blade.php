@@ -20,8 +20,6 @@
             @if (!Request::is('login') && !Request::is('register'))
             <ul class="header__menu">
                 @auth
-                <li><a href="{{ route('mypage') }}">マイページ</a></li>
-                <li><a href="{{ route('sell') }}">出品</a></li>
                 <li>
                     <a href="{{ route('logout') }}"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">ログアウト</a>
@@ -29,6 +27,8 @@
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                     @csrf
                 </form>
+                <li><a href="{{ route('mypage') }}">マイページ</a></li>
+                <li><a href="{{ route('sell') }}">出品</a></li>
                 @endauth
 
                 @guest

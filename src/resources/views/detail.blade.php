@@ -17,34 +17,11 @@
         <h4>ブランド：{{ $exhibition->brand }}</h4>
         @endif
 
-        <p>{{ $exhibition->detail }}</p>
-
-        <div class="product-info">
-            <p>カテゴリ：
-                @php
-                $categories = json_decode($exhibition->category, true);
-                @endphp
-
-                @if(!empty($categories) && is_array($categories))
-                {{ implode(' / ', $categories) }}
-                @else
-                不明
-                @endif
-            </p>
-            <p>商品の状態：
-                @php
-                $conditionLabels = [
-                'brand_new' => '新品・未使用',
-                'used_like_new' => '未使用に近い',
-                'used_good' => '目立った傷や汚れなし',
-                'used_acceptable' => 'やや傷や汚れあり',
-                'used_poor' => '全体的に状態が悪い',
-                ];
-                @endphp
-                {{ $conditionLabels[$exhibition->condition] ?? '不明' }}
-            </p>
-            <p>価格：&yen; {{ number_format($exhibition->price) }}</p>
-        </div>
+        <p>
+            <span class="price-symbol">&yen;</span>
+            <span class="price-number">{{ number_format($exhibition->price) }}</span>
+            <span class="price-tax">(税込)</span>
+        </p>
 
         {{-- アイコン表示 --}}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -68,23 +45,65 @@
         </div>
 
         <form action="{{ route('purchase', ['exhibition_id' => $exhibition->id]) }}" method="GET">
-            <button type="submit">購入手続きへ</button>
+            <div class="purchase-button">
+                <button type="submit">購入手続きへ</button>
+            </div>
         </form>
+
+        <h3>商品説明</h3>
+        <p>{{ $exhibition->detail }}</p>
+
+        <h3>商品の情報</h3>
+        <div class="product-info">
+            <div class="product-info-item">
+                <span class="product-info-label">カテゴリー</span>
+                @php
+                $categories = json_decode($exhibition->category, true);
+                @endphp
+
+                @if(!empty($categories) && is_array($categories))
+                <div class="category-tags">
+                    @foreach($categories as $category)
+                    <span class="category-tag">{{ $category }}</span>
+                    @endforeach
+                </div>
+                @else
+                <span class="category-tag">不明</span>
+                @endif
+            </div>
+
+            <div class="product-info-item">
+                <span class="product-info-label">商品の状態</span>
+                @php
+                $conditionLabels = [
+                'brand_new' => '新品・未使用',
+                'used_like_new' => '未使用に近い',
+                'used_good' => '目立った傷や汚れなし',
+                'used_acceptable' => 'やや傷や汚れあり',
+                'used_poor' => '全体的に状態が悪い',
+                ];
+                @endphp
+                <span class="condition-label">{{ $conditionLabels[$exhibition->condition] ?? '不明' }}</span>
+            </div>
+        </div>
 
         {{-- コメント一覧 --}}
         <div class="comments">
-            <h3>他のユーザーのコメント</h3>
+            <div class="comment-header">
+                <span class="comment-title">コメント</span>
+                <span class="comment-counts">({{ $exhibition->comments->count() }})</span>
+            </div>
             @foreach($exhibition->comments as $comment)
             <div class="comment">
-                @if($comment->user && $comment->user->profile && $comment->user->profile->profile_image)
-                <img src="{{ asset('storage/' . $comment->user->profile->profile_image) }}" alt="profile"
-                    class="profile-image">
-                @else
-                <img src="{{ asset('images/default-profile.png') }}" alt="default profile" class="profile-image">
-                @endif
-
-                <div class="comment-content">
-                    <strong>{{ $comment->user->name ?? '名無し' }}</strong>
+                <div class="comment-header">
+                    @if($comment->user && $comment->user->profile && $comment->user->profile->profile_image)
+                    <img src="{{ asset('storage/' . $comment->user->profile->profile_image) }}" alt="profile" class="profile-image">
+                    @else
+                    <img src="{{ asset('images/profile.png') }}" alt="default profile" class="profile-image">
+                    @endif
+                    <div class="comment-user">{{ $comment->user->name ?? '名無し' }}</div>
+                </div>
+                <div class="comment-body">
                     <p>{{ $comment->comment }}</p>
                     <small>{{ $comment->created_at->format('Y/m/d H:i') }}</small>
                 </div>
@@ -94,18 +113,15 @@
 
         {{-- コメント投稿 --}}
         <div class="comment-form">
-            <h4>コメントを投稿する</h4>
+            <h4>商品へのコメント</h4>
             @if(session('success'))
             <p class="success">{{ session('success') }}</p>
             @endif
             <form action="{{ route('comments.store') }}" method="POST">
                 @csrf
                 <input type="hidden" name="exhibition_id" value="{{ $exhibition->id }}">
-                <div>
-                    <label for="comment">コメント:</label>
-                    <textarea name="comment" id="comment" required></textarea>
-                </div>
-                <button type="submit">投稿</button>
+                <textarea name="comment" id="comment" required></textarea>
+                <button type="submit">コメントを送信する</button>
             </form>
         </div>
     </div>

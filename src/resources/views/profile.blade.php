@@ -10,7 +10,11 @@
     <div class="profile__info">
         {{-- プロフィール画像 --}}
         <div class="profile__image">
-            <img src="{{ asset('storage/' . (optional($user->profile)->profile_image ?? 'profile.png')) }}" alt="プロフィール画像" style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;">
+            @if($user->profile && $user->profile->profile_image)
+            <img src="{{ asset('storage/' . $user->profile->profile_image) }}" alt="プロフィール画像">
+            @else
+            <img src="{{ asset('storage/images/profile.png') }}" alt="プロフィール画像">
+            @endif
         </div>
         <p>{{ $address->name ?? $user->name }}</p>
         <a href="{{ route('profile.edit') }}" class="profile__edit-button">プロフィール設定</a>

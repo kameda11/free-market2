@@ -37,3 +37,16 @@
     color: #ccc;
     /* ホバー時に少し明るく */
 }
+
+/* 出品リンクのスタイル */
+.header__menu li a[href*="sell"] {
+    background-color: #FFFFFF;
+    color: #000000;
+    padding: 8px 16px;
+    border-radius: 4px;
+}
+
+.header__menu li a[href*="sell"]:hover {
+    color: #000000;
+    opacity: 0.8;
+}
